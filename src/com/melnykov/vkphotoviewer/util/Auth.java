@@ -1,5 +1,8 @@
 package com.melnykov.vkphotoviewer.util;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 public class Auth {
 
@@ -17,5 +20,21 @@ public class Auth {
 	private static String getAccessRights() {
 		// Access only to photos
 		return "photos";
+	}
+	
+	public static String getAccessToken(String redirectUri) {
+		return extractPattern(redirectUri, "access_token=(.*?)&");
+	}
+	
+	public static String getUserId(String redirectUri) {
+		return extractPattern(redirectUri, "user_id=(\\d*)");
+	}
+	
+	private static String extractPattern(String string, String pattern) {
+		Pattern p = Pattern.compile(pattern);
+        Matcher m = p.matcher(string);
+        if (!m.find())
+            return null;
+        return m.toMatchResult().group(1);
 	}
 }

@@ -2,21 +2,27 @@ package com.melnykov.vkphotoviewer.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
+import com.melnykov.vkphotoviewer.R;
+import com.melnykov.vkphotoviewer.ui.fragment.AlbumListFragment;
 import com.melnykov.vkphotoviewer.util.Constants;
 import com.melnykov.vkphotoviewer.util.Session;
 
-public class AlbumListActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity {
 	
-	private static final String TAG = AlbumListActivity.class.getSimpleName();
+	private static final String TAG = MainActivity.class.getSimpleName();
 	
 	@Override
 	protected void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
+
+		setContentView(R.layout.activity_main);
 		
-		final Session session = Session.restore(getApplicationContext());
+		final Session session = Session.getInstance(getApplicationContext());
 		if (session.getAccessToken() == null) {
 			startLoginActivity();
 		} else {
@@ -33,18 +39,32 @@ public class AlbumListActivity extends FragmentActivity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == Constants.REQUEST_CODE_LOGIN) {
-			if (requestCode == RESULT_OK) {
+			if (resultCode == RESULT_OK) {
 				final String accessToken = data.getStringExtra(Constants.IEXTRA_ACCESS_TOKEN);
 				final String userId = data.getStringExtra(Constants.IEXTRA_USER_ID);
 				if (Constants.DEBUG) Log.d(TAG, "Authorization successfull. Access token = " + accessToken + " user id = " + userId);
-				Session newSession = new Session(accessToken, userId);
+				Session newSession = Session.getInstance(getApplicationContext());
+				newSession.setAccessToken(accessToken);
+				newSession.setUserId(userId);
 				newSession.save(getApplicationContext());
 				loadAlbumList();
 			}
 		}
 	}
 	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+	    //No call for super(). Bug on API Level > 11.
+	}
+	
 	private void loadAlbumList() {
-		
+		AlbumListFragment albumListFragment = new AlbumListFragment();
+		replaceMainFragment(albumListFragment);
+	}
+	
+	private void replaceMainFragment(Fragment fragment) {
+		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+		fragmentTransaction.replace(R.id.fragment_container, fragment);
+		fragmentTransaction.commit();
 	}
 }
