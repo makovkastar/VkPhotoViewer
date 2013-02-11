@@ -5,12 +5,15 @@ import java.util.List;
 
 import org.json.JSONException;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
+import android.view.View;
+import android.widget.ListView;
 
 import com.melnykov.vkphotoviewer.model.Album;
 import com.melnykov.vkphotoviewer.net.protocol.GetAlbumsProtocol;
@@ -19,6 +22,11 @@ import com.melnykov.vkphotoviewer.ui.adapter.AlbumAdapter;
 public class AlbumListFragment extends ListFragment implements LoaderCallbacks<List<Album>>{
 
 	private AlbumAdapter mAdapter;
+	private OnAlbumSelectedListener mAlbumSelectedListener;
+	
+	public interface OnAlbumSelectedListener {
+		public void onAlbumSelected(long albumId);
+	}
 	
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
@@ -33,6 +41,25 @@ public class AlbumListFragment extends ListFragment implements LoaderCallbacks<L
 	public void onResume() {
 		super.onResume();
 		getLoaderManager().restartLoader(0, null, this);
+	}
+	
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		try {
+			this.mAlbumSelectedListener = (OnAlbumSelectedListener) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException("Parent activity must implement OnAlbumSelectedListener");
+		}
+	}
+	
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		super.onListItemClick(l, v, position, id);
+		Album album = mAdapter.getItem(position);
+		if (mAlbumSelectedListener != null) {
+			mAlbumSelectedListener.onAlbumSelected(album.getId());
+		}
 	}
 	
 	@Override
@@ -102,7 +129,6 @@ public class AlbumListFragment extends ListFragment implements LoaderCallbacks<L
 				// immediately.
 				deliverResult(mAlbums);
 			}
-			
 			forceLoad();
 		}
 		
