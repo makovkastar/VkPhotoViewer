@@ -19,7 +19,7 @@
             android:name=".ui.activity.LoginActivity"
             android:label="@string/app_name" >
         </activity>
-        <activity android:name=".ui.activity.AlbumListActivity" >
+        <activity android:name=".ui.activity.MainActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

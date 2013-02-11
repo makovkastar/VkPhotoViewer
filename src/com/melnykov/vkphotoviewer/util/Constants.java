@@ -27,7 +27,7 @@ public abstract class Constants {
 	
 	
 	public static final String CALLBACK_URL = "http://api.vkontakte.ru/blank.html";
-	public static final String API_ID = "";
+	public static final String API_ID = "3422904";
 	
 	private Constants() {}
 	

@@ -2,7 +2,6 @@ package com.melnykov.vkphotoviewer.ui.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.webkit.WebView;
@@ -32,15 +31,14 @@ public class LoginActivity extends Activity {
     	 public boolean shouldOverrideUrlLoading(WebView view, String url) {
              boolean result = true;
              if (url != null && url.startsWith(Constants.CALLBACK_URL)) {
-                 Uri uri = Uri.parse(url);
                  if (Constants.DEBUG) Log.v(TAG, url);
-                 if (uri.getQueryParameter("error") != null) {
+                 if (url.contains("error")) {
                      setResult(RESULT_CANCELED);
                      finish();
                  } else {
                  	// Get token and verifier
-                     String accessToken = uri.getQueryParameter("access_token");
-                     String userId = uri.getQueryParameter("user_id");
+                     String accessToken = Auth.getAccessToken(url);
+                     String userId = Auth.getUserId(url);
 
                      Intent intent = getIntent();
                      intent.putExtra(Constants.IEXTRA_ACCESS_TOKEN, accessToken);
