@@ -9,10 +9,11 @@ import android.util.Log;
 
 import com.melnykov.vkphotoviewer.R;
 import com.melnykov.vkphotoviewer.ui.fragment.AlbumListFragment;
+import com.melnykov.vkphotoviewer.ui.fragment.PhotoGridFragment;
 import com.melnykov.vkphotoviewer.util.Constants;
 import com.melnykov.vkphotoviewer.util.Session;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements AlbumListFragment.OnAlbumSelectedListener {
 	
 	private static final String TAG = MainActivity.class.getSimpleName();
 	
@@ -62,9 +63,19 @@ public class MainActivity extends FragmentActivity {
 		replaceMainFragment(albumListFragment);
 	}
 	
+	private void loadPhotosForAlbum(long albumId) {
+		PhotoGridFragment photoGridFragment = PhotoGridFragment.newInstance(albumId);
+		replaceMainFragment(photoGridFragment);
+	}
+	
 	private void replaceMainFragment(Fragment fragment) {
 		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 		fragmentTransaction.replace(R.id.fragment_container, fragment);
 		fragmentTransaction.commit();
+	}
+
+	@Override
+	public void onAlbumSelected(long albumId) {
+		loadPhotosForAlbum(albumId);
 	}
 }
