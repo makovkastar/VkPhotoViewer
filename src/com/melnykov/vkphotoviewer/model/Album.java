@@ -7,6 +7,7 @@ public class Album {
 	
 	private long id;
     private long thumbId;
+    private String thumbSrc;
     private long ownerId;
     private String title;
     private String description;
@@ -21,6 +22,7 @@ public class Album {
         album.ownerId = Long.parseLong(json.getString("owner_id"));
         album.description = json.optString("description");
         album.thumbId = Long.parseLong(json.optString("thumb_id"));
+        album.thumbSrc = json.optString("thumb_src");
         album.createdAt = Long.parseLong(json.optString("created"));
         album.size = json.optLong("size");
         album.updatedAt = Long.parseLong(json.optString("updated"));
@@ -89,6 +91,10 @@ public class Album {
 
 	public void setSize(long size) {
 		this.size = size;
+	}
+	
+	public String getThumbSrc() {
+		return thumbSrc;
 	}
 
 }
