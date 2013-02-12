@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+<GridView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/gvPhotos"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:columnWidth="95dp"
+    android:gravity="center"
+    android:horizontalSpacing="8dp"
+    android:numColumns="auto_fit"
+    android:stretchMode="columnWidth"
+    android:verticalSpacing="8dp"
+    android:padding="8dp">
 
-    <GridView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:numColumns="3"
-        android:stretchMode="columnWidth"
-        android:gravity="center" >
-    </GridView>
-
-</LinearLayout>
+</GridView>

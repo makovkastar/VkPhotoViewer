@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.melnykov.vkphotoviewer.R;
@@ -20,7 +21,7 @@ public class AlbumAdapter extends ArrayAdapter<Album> {
 	public AlbumAdapter(Context context) {
 		super(context, 0);
 		this.mInflater = LayoutInflater.from(context);
-		this.mImageDownloader = new ImageDownloader();
+		this.mImageDownloader = new ImageDownloader(context);
 	}
 	
 	@Override
@@ -33,18 +34,20 @@ public class AlbumAdapter extends ArrayAdapter<Album> {
 			viewHolder = new ViewHolder();
 			viewHolder.ivAlbumCover = (ImageView) convertView.findViewById(R.id.ivAlbumCover);
 			viewHolder.tvAlbumTitle = (TextView) convertView.findViewById(R.id.tvAlbumTitle);
+			viewHolder.pbLoading = (ProgressBar) convertView.findViewById(R.id.pbLoading);
 			convertView.setTag(viewHolder);
 		} else {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
 		
 		viewHolder.tvAlbumTitle.setText(item.getTitle());
-		mImageDownloader.download(item.getThumbSrc(), viewHolder.ivAlbumCover);
+		mImageDownloader.download(item.getThumbSrc(), String.valueOf(item.getId()) + "_normal", viewHolder.ivAlbumCover, viewHolder.pbLoading);
 		
 		return convertView;
 	}
 
 	private static class ViewHolder {
+		ProgressBar pbLoading;
 		ImageView ivAlbumCover;
 		TextView tvAlbumTitle;
 	}

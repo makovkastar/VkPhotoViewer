@@ -6,7 +6,7 @@
     android:orientation="horizontal" >
 
     <RelativeLayout
-        android:id="@+id/rlAlbumConverContainer"
+        android:id="@+id/rlAlbumCoverContainer"
         android:layout_width="56dp"
         android:layout_height="56dp" >
 
@@ -17,8 +17,8 @@
             android:scaleType="centerCrop" />
 
         <ProgressBar
-            android:id="@+id/progress"
-            style="?android:attr/progressBarStyleSmall"
+            android:id="@+id/pbLoading"
+            style="?android:attr/progressBarStyleLargeInverse"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="8dp"
-        android:layout_toRightOf="@id/rlAlbumConverContainer"
+        android:layout_toRightOf="@id/rlAlbumCoverContainer"
         android:text="Album Title"
         android:textSize="18sp" />
 

@@ -22,8 +22,8 @@ public class GetPhotosProtocol extends AbstractProtocol {
 		super(context, METHOD_NAME);
 	}
 	
-	public List<Photo> getPhotos(String albumId) throws JSONException {
-		addParam(PARAM_ALBUM_ID, albumId);
+	public List<Photo> getPhotos(long albumId) throws JSONException {
+		addParam(PARAM_ALBUM_ID, String.valueOf(albumId));
 		addParam(PARAM_USER_ID, Session.getInstance(getContext()).getUserId());
 		
 		List<Photo> result = new ArrayList<Photo>();
