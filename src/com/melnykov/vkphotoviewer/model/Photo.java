@@ -5,15 +5,15 @@ import org.json.JSONObject;
 
 public class Photo {
 
-	public long id;
-    public long albumId;
-    public String ownerId;
-    public String src;
-    public String srcSmall;
-    public String srcBig;
-    public String srcXbig;
-    public String srcXxbig;
-    public String srcXxxbig;
+	private long id;
+    private long albumId;
+    private String ownerId;
+    private String src;
+    private String srcSmall;
+    private String srcBig;
+    private String srcXbig;
+    private String srcXxbig;
+    private String srcXxxbig;
 
     public static Photo fromJson(JSONObject json) throws JSONException {
         Photo photo = new Photo();
@@ -30,4 +30,75 @@ public class Photo {
         return photo;
     }
 
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public long getAlbumId() {
+		return albumId;
+	}
+
+	public void setAlbumId(long albumId) {
+		this.albumId = albumId;
+	}
+
+	public String getOwnerId() {
+		return ownerId;
+	}
+
+	public void setOwnerId(String ownerId) {
+		this.ownerId = ownerId;
+	}
+
+	public String getSrc() {
+		return src;
+	}
+
+	public void setSrc(String src) {
+		this.src = src;
+	}
+
+	public String getSrcSmall() {
+		return srcSmall;
+	}
+
+	public void setSrcSmall(String srcSmall) {
+		this.srcSmall = srcSmall;
+	}
+
+	public String getSrcBig() {
+		return srcBig;
+	}
+
+	public void setSrcBig(String srcBig) {
+		this.srcBig = srcBig;
+	}
+
+	public String getSrcXbig() {
+		return srcXbig;
+	}
+
+	public void setSrcXbig(String srcXbig) {
+		this.srcXbig = srcXbig;
+	}
+
+	public String getSrcXxbig() {
+		return srcXxbig;
+	}
+
+	public void setSrcXxbig(String srcXxbig) {
+		this.srcXxbig = srcXxbig;
+	}
+
+	public String getSrcXxxbig() {
+		return srcXxxbig;
+	}
+
+	public void setSrcXxxbig(String srcXxxbig) {
+		this.srcXxxbig = srcXxxbig;
+	}
 }

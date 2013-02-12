@@ -30,6 +30,11 @@ public abstract class Constants {
 	public static final String API_ID = "3422904";
 	
 	public static final long HTTP_CACHE_SIZE = 10 * 1024 * 1024; // 10 MiB
+	public static final String HTTP_CACHE_SUBDIR = "httpresponsecache";
+	public static final int DISK_CACHE_SIZE = 1024 * 1024 * 10; // 10MB
+	public static final String DISK_CACHE_SUBDIR = "thumbnails";
+	
+	public static final int APP_VERSION = 1;
 	
 	private Constants() {}
 	

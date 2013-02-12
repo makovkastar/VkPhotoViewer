@@ -12,12 +12,14 @@ import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
 import com.melnykov.vkphotoviewer.model.Album;
 import com.melnykov.vkphotoviewer.net.protocol.GetAlbumsProtocol;
 import com.melnykov.vkphotoviewer.ui.adapter.AlbumAdapter;
+import com.melnykov.vkphotoviewer.util.Constants;
 
 public class AlbumListFragment extends ListFragment implements LoaderCallbacks<List<Album>>{
 
@@ -33,14 +35,13 @@ public class AlbumListFragment extends ListFragment implements LoaderCallbacks<L
 		super.onActivityCreated(savedInstanceState);
 		mAdapter = new AlbumAdapter(getActivity());
 		getListView().setAdapter(mAdapter);
-		
-		getLoaderManager().initLoader(0, null, this);
 	}
 	
 	@Override
-	public void onResume() {
-		super.onResume();
-		getLoaderManager().restartLoader(0, null, this);
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		if (Constants.DEBUG) Log.d("AlbumListFragment", "onCreate");
+		getLoaderManager().initLoader(0, null, this);
 	}
 	
 	@Override
@@ -128,8 +129,9 @@ public class AlbumListFragment extends ListFragment implements LoaderCallbacks<L
 				// If we currently have a result available, deliver it
 				// immediately.
 				deliverResult(mAlbums);
+			} else {
+				forceLoad();
 			}
-			forceLoad();
 		}
 		
 		 /**
