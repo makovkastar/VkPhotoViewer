@@ -16,14 +16,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.melnykov.vkphotoviewer.R;
 import com.melnykov.vkphotoviewer.model.Photo;
 import com.melnykov.vkphotoviewer.net.protocol.GetPhotosProtocol;
 import com.melnykov.vkphotoviewer.ui.adapter.PhotoGridAdapter;
 import com.melnykov.vkphotoviewer.util.Constants;
+import com.melnykov.vkphotoviewer.util.ImageDownloader;
+import com.melnykov.vkphotoviewer.util.ImageDownloader.BitmapDownloaderTask;
 
 public class PhotoGridFragment extends Fragment implements LoaderCallbacks<List<Photo>>{
 
@@ -50,7 +55,10 @@ public class PhotoGridFragment extends Fragment implements LoaderCallbacks<List<
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		final GridView gridView  = (GridView) inflater.inflate(R.layout.fragment_photo_grid, container, false);
+		final View rootView = inflater.inflate(R.layout.fragment_photo_grid, container, false);;
+		final GridView gridView  = (GridView) rootView.findViewById(R.id.gvPhotos);
+		final TextView emptyView = (TextView) rootView.findViewById(android.R.id.empty);
+		gridView.setEmptyView(emptyView);
 		this.mAdapter = new PhotoGridAdapter(getActivity());
 		gridView.setAdapter(mAdapter);
 		gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -62,7 +70,18 @@ public class PhotoGridFragment extends Fragment implements LoaderCallbacks<List<
 				mPhotoSelectedListener.onPhotoSelected(photo.getSrcBig(), String.valueOf(photo.getId()));
 			}
 		});
-		return gridView;
+		gridView.setRecyclerListener(new AbsListView.RecyclerListener() {
+			
+			@Override
+			public void onMovedToScrapHeap(View view) {
+				ImageView ivPhotoThumb = (ImageView) view.findViewById(R.id.ivPhotoThumb);
+				BitmapDownloaderTask bitmapDownloaderTask = ImageDownloader.getBitmapDownloaderTask(ivPhotoThumb);
+				if (bitmapDownloaderTask != null) {
+					bitmapDownloaderTask.cancel(true);
+				}
+			}
+		});
+		return rootView;
 	}
 	
 	@Override

@@ -28,16 +28,18 @@ public class GetPhotosProtocol extends AbstractProtocol {
 		
 		List<Photo> result = new ArrayList<Photo>();
 		String response = sendRequest();
-		JSONObject jsonObj = new JSONObject(response);
-		JSONArray jsonArr = jsonObj.optJSONArray("response");
-		if (jsonArr != null) {
-			for (int i = 0; i < jsonArr.length(); i++) {
-				JSONObject jsonPhoto = jsonArr.getJSONObject(i);
-				Photo photo = Photo.fromJson(jsonPhoto);
-				result.add(photo);
+		if (response != null) {
+			JSONObject jsonObj = new JSONObject(response);
+			JSONArray jsonArr = jsonObj.optJSONArray("response");
+			if (jsonArr != null) {
+				for (int i = 0; i < jsonArr.length(); i++) {
+					JSONObject jsonPhoto = jsonArr.getJSONObject(i);
+					Photo photo = Photo.fromJson(jsonPhoto);
+					result.add(photo);
+				}
 			}
 		}
-		
+	
 		return result;
 	}
 

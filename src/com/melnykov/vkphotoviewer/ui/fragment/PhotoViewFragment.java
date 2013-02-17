@@ -52,7 +52,7 @@ public class PhotoViewFragment extends Fragment {
 			String photoUrl = getArguments().getString("photoUrl");
 			String photoId = getArguments().getString("photoId");
 			if (photoUrl != null && photoId != null) {
-				ImageDownloader imageDownloader = new ImageDownloader(getActivity());
+				ImageDownloader imageDownloader = ImageDownloader.getInstance(getActivity());
 				imageDownloader.download(photoUrl, photoId + "_big", ivPhoto, pbLoading);
 			}
 		}

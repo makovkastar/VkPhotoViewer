@@ -26,15 +26,17 @@ public class GetAlbumsProtocol extends AbstractProtocol {
 		String response = sendRequest();
 		
 		List<Album> result = new ArrayList<Album>();
-		JSONObject jsonObj = new JSONObject(response);
-		JSONArray jsonArr = jsonObj.optJSONArray("response");
-		if (jsonArr != null) {
-			for (int i = 0; i < jsonArr.length(); i++) {
-				JSONObject jsonAlbum = jsonArr.getJSONObject(i);
-				Album album = Album.fromJson(jsonAlbum);
-				// Do not add deleted albums
-				if (!album.getTitle().equals(DELETED_TITLE)) {
-					result.add(album);
+		if (response != null) {
+			JSONObject jsonObj = new JSONObject(response);
+			JSONArray jsonArr = jsonObj.optJSONArray("response");
+			if (jsonArr != null) {
+				for (int i = 0; i < jsonArr.length(); i++) {
+					JSONObject jsonAlbum = jsonArr.getJSONObject(i);
+					Album album = Album.fromJson(jsonAlbum);
+					// Do not add deleted albums
+					if (!album.getTitle().equals(DELETED_TITLE)) {
+						result.add(album);
+					}
 				}
 			}
 		}

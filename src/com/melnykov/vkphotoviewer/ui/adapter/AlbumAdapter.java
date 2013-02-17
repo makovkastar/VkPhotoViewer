@@ -21,7 +21,7 @@ public class AlbumAdapter extends ArrayAdapter<Album> {
 	public AlbumAdapter(Context context) {
 		super(context, 0);
 		this.mInflater = LayoutInflater.from(context);
-		this.mImageDownloader = new ImageDownloader(context);
+		this.mImageDownloader = ImageDownloader.getInstance(context);
 	}
 	
 	@Override

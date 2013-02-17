@@ -1,5 +1,7 @@
 package com.melnykov.vkphotoviewer.ui.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +14,7 @@ import com.melnykov.vkphotoviewer.ui.fragment.AlbumListFragment;
 import com.melnykov.vkphotoviewer.ui.fragment.PhotoGridFragment;
 import com.melnykov.vkphotoviewer.ui.fragment.PhotoViewFragment;
 import com.melnykov.vkphotoviewer.util.Constants;
+import com.melnykov.vkphotoviewer.util.NetworkUtil;
 import com.melnykov.vkphotoviewer.util.Session;
 
 public class MainActivity extends FragmentActivity implements AlbumListFragment.OnAlbumSelectedListener, PhotoGridFragment.OnPhotoSelectedListener {
@@ -27,38 +30,72 @@ public class MainActivity extends FragmentActivity implements AlbumListFragment.
 	private static final String BUNDLE_KEY_PHOTO_URL = "photo_url";
 	private static final String BUNDLE_KEY_PHOTO_ID = "photo_id";
 	
+	private boolean onAuthResultSuccess;
+	
 	@Override
 	protected void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
-
 		setContentView(R.layout.activity_main);
-		
-		final Session session = Session.getInstance(getApplicationContext());
-		if (session.getAccessToken() == null) {
-			startLoginActivity();
-		} else {
-			restoreFragmentState(bundle);
-		}
+		initialize(bundle);
 	}
 	
+	private void initialize(Bundle bundle) {
+		// Check internet connection
+		if (NetworkUtil.hasInternetConnection(this)) {
+			final Session session = Session.getInstance(getApplicationContext());
+			if (session.getAccessToken() == null) {
+				startLoginActivity();
+			} else {
+				restoreFragmentState(bundle);
+			}
+		} else {
+			showNoInternetConnectionDialog(bundle);
+		}
+	}
+
 	private void startLoginActivity() {
 		Intent intent = new Intent();
         intent.setClass(this, LoginActivity.class);
         startActivityForResult(intent, Constants.REQUEST_CODE_LOGIN);
 	}
 
+	private void showNoInternetConnectionDialog(final Bundle bundle) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("No Internet connection")
+			   .setTitle("Connection problems")
+			   .setCancelable(false)
+			   .setPositiveButton("Retry", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+					initialize(bundle);
+				}
+			});
+		builder.create().show();
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if (onAuthResultSuccess) {
+			loadAlbumList();
+		}
+	}
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == Constants.REQUEST_CODE_LOGIN) {
 			if (resultCode == RESULT_OK) {
 				final String accessToken = data.getStringExtra(Constants.IEXTRA_ACCESS_TOKEN);
 				final String userId = data.getStringExtra(Constants.IEXTRA_USER_ID);
+				final long expirationTime = data.getLongExtra(Constants.IEXTRA_ACCESS_TOKEN_EXPIRATION_TIME, 0);
 				if (Constants.DEBUG) Log.d(TAG, "Authorization successfull. Access token = " + accessToken + " user id = " + userId);
 				Session newSession = Session.getInstance(getApplicationContext());
 				newSession.setAccessToken(accessToken);
 				newSession.setUserId(userId);
 				newSession.save(getApplicationContext());
-				loadAlbumList();
+				onAuthResultSuccess = true;
 			}
 		}
 	}
@@ -70,13 +107,16 @@ public class MainActivity extends FragmentActivity implements AlbumListFragment.
 		outState.putString(BUNDLE_KEY_CURRENT_FRAGMENT_TAG, mCurrentFragmentTag);
 		if (mCurrentFragmentTag == FRAGMENT_PHOTO_GRID_TAG) {
 			PhotoGridFragment photoGridFragment = (PhotoGridFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_PHOTO_GRID_TAG);
-			outState.putLong(BUNDLE_KEY_ALBUM_ID, photoGridFragment.getAlbumId());
+			if (photoGridFragment != null) {
+				outState.putLong(BUNDLE_KEY_ALBUM_ID, photoGridFragment.getAlbumId());
+			}
 		} else if (mCurrentFragmentTag == FRAGMENT_PHOTO_VIEW_TAG) {
 			PhotoViewFragment photoViewFragment = (PhotoViewFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_PHOTO_VIEW_TAG);
-			outState.putString(BUNDLE_KEY_PHOTO_URL, photoViewFragment.getPhotoUrl());
-			outState.putString(BUNDLE_KEY_PHOTO_ID, photoViewFragment.getPhotoId());
+			if (photoViewFragment != null) {
+				outState.putString(BUNDLE_KEY_PHOTO_URL, photoViewFragment.getPhotoUrl());
+				outState.putString(BUNDLE_KEY_PHOTO_ID, photoViewFragment.getPhotoId());
+			}
 		}
-		 outState.putString("WORKAROUND_FOR_BUG_19917_KEY", "WORKAROUND_FOR_BUG_19917_VALUE");
 		 super.onSaveInstanceState(outState);
 	}
 	
@@ -90,12 +130,20 @@ public class MainActivity extends FragmentActivity implements AlbumListFragment.
 			if (tag == null || tag == FRAGMENT_ALBUM_LIST_TAG) {
 				loadAlbumList();
 			} else if (tag == FRAGMENT_PHOTO_GRID_TAG) {
-				final long albumId = savedInstanceState.getLong(BUNDLE_KEY_ALBUM_ID);
-				loadPhotosForAlbum(albumId);
+				final long albumId = savedInstanceState.getLong(BUNDLE_KEY_ALBUM_ID, -1);
+				if (albumId != -1) {
+					loadPhotosForAlbum(albumId);
+				} else {
+					loadAlbumList();
+				}
 			} else if (tag == FRAGMENT_PHOTO_VIEW_TAG) {
 				final String photoUrl = savedInstanceState.getString(BUNDLE_KEY_PHOTO_URL);
 				final String photoId = savedInstanceState.getString(BUNDLE_KEY_PHOTO_ID); 
-				loadPhoto(photoUrl, photoId);
+				if (photoUrl != null && photoId != null) {
+					loadPhoto(photoUrl, photoId);
+				} else {
+					loadAlbumList();
+				}
 			}
 		}
 	}

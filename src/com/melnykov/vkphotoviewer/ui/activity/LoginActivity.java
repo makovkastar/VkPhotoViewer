@@ -39,10 +39,12 @@ public class LoginActivity extends Activity {
                  	// Get token and verifier
                      String accessToken = Auth.getAccessToken(url);
                      String userId = Auth.getUserId(url);
+                     long expirationTime = Auth.getExpirationTime(url);
 
                      Intent intent = getIntent();
                      intent.putExtra(Constants.IEXTRA_ACCESS_TOKEN, accessToken);
                      intent.putExtra(Constants.IEXTRA_USER_ID, userId);
+                     intent.putExtra(Constants.IEXTRA_ACCESS_TOKEN_EXPIRATION_TIME, expirationTime);
 
                      setResult(RESULT_OK, intent);
                      finish();
