@@ -89,7 +89,6 @@ public class MainActivity extends FragmentActivity implements AlbumListFragment.
 			if (resultCode == RESULT_OK) {
 				final String accessToken = data.getStringExtra(Constants.IEXTRA_ACCESS_TOKEN);
 				final String userId = data.getStringExtra(Constants.IEXTRA_USER_ID);
-				final long expirationTime = data.getLongExtra(Constants.IEXTRA_ACCESS_TOKEN_EXPIRATION_TIME, 0);
 				if (Constants.DEBUG) Log.d(TAG, "Authorization successfull. Access token = " + accessToken + " user id = " + userId);
 				Session newSession = Session.getInstance(getApplicationContext());
 				newSession.setAccessToken(accessToken);
@@ -164,12 +163,12 @@ public class MainActivity extends FragmentActivity implements AlbumListFragment.
 	}
 	
 	private void replaceMainFragment(Fragment fragment, String tag) {
-		mCurrentFragmentTag = tag;
 		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 		fragmentTransaction.replace(R.id.fragment_container, fragment, tag);
-		if (!mIsConfigChanged) {
-			fragmentTransaction.addToBackStack(null);
+		if (!mIsConfigChanged && mCurrentFragmentTag != null) {
+			fragmentTransaction.addToBackStack(tag);
 		}
+		mCurrentFragmentTag = tag;
 		fragmentTransaction.commit();
 	}
 
