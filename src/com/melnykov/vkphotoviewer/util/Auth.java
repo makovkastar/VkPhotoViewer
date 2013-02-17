@@ -19,7 +19,7 @@ public class Auth {
 	
 	private static String getAccessRights() {
 		// Access only to photos
-		return "photos";
+		return "photos,offline";
 	}
 	
 	public static String getAccessToken(String redirectUri) {
@@ -28,6 +28,10 @@ public class Auth {
 	
 	public static String getUserId(String redirectUri) {
 		return extractPattern(redirectUri, "user_id=(\\d*)");
+	}
+	
+	public static long getExpirationTime(String redirectUri) {
+		return Long.parseLong(extractPattern(redirectUri, "expires_in=(\\d*)"));
 	}
 	
 	private static String extractPattern(String string, String pattern) {

@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/gvPhotos"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:columnWidth="95dp"
-    android:gravity="center"
-    android:horizontalSpacing="8dp"
-    android:numColumns="auto_fit"
-    android:stretchMode="columnWidth"
-    android:verticalSpacing="8dp"
-    android:padding="8dp">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
 
-</GridView>
+    <GridView
+        android:id="@+id/gvPhotos"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:columnWidth="95dp"
+        android:gravity="center"
+        android:horizontalSpacing="8dp"
+        android:numColumns="auto_fit"
+        android:padding="8dp"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="8dp" >
+    </GridView>
+    
+    <TextView 
+        android:id="@android:id/empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/loading"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="18sp"/>
+
+</RelativeLayout>

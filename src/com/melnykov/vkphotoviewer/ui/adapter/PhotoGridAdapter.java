@@ -20,7 +20,7 @@ public class PhotoGridAdapter extends ArrayAdapter<Photo> {
 	public PhotoGridAdapter(Context context) {
 		super(context, 0);
 		this.mInflater = LayoutInflater.from(context);
-		this.mImageDownloader = new ImageDownloader(context);
+		this.mImageDownloader = ImageDownloader.getInstance(context);
 	}
 
 	@Override

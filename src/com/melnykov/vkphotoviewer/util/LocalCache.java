@@ -49,8 +49,10 @@ public class LocalCache {
 	}
 
 	public void addBitmapToCache(String key, Bitmap bitmap) {
-		addBitmapToMemoryCache(key, bitmap);
-		addBitmapToDiskCache(key, bitmap);
+		if (key != null && bitmap != null) {
+			addBitmapToMemoryCache(key, bitmap);
+			addBitmapToDiskCache(key, bitmap);
+		}
 	}
 	
 	public Bitmap getBitmapFromCache(String key) {
@@ -85,8 +87,8 @@ public class LocalCache {
 	
 	private void addBitmapToMemoryCache(String key, Bitmap bitmap) {
 	    if (getBitmapFromMemCache(key) == null) {
-	        mMemoryCache.put(key, bitmap);
-	        if (Constants.DEBUG)  Log.d(TAG, "Image put on memory cache " + key);
+    		mMemoryCache.put(key, bitmap);
+    		if (Constants.DEBUG)  Log.d(TAG, "Image put on memory cache " + key);
 	    }
 	}
 
