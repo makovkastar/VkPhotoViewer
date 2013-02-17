@@ -18,6 +18,11 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
@@ -140,7 +145,25 @@ public class ImageDownloader {
 				BitmapDownloaderTask bitmapDownloaderTask = getBitmapDownloaderTask(imageView);
 				 // Change bitmap only if this process is still associated with it
 			    if (this == bitmapDownloaderTask) {
+			    	AlphaAnimation fadeInAnimation = new AlphaAnimation(0, 1);
+			    	fadeInAnimation.setInterpolator(new AccelerateInterpolator());
+			    	fadeInAnimation.setDuration(500);
+			    	imageView.setVisibility(View.GONE);
 			        imageView.setImageBitmap(bitmap);
+			        fadeInAnimation.setAnimationListener(new AnimationListener() {
+						
+						@Override
+						public void onAnimationStart(Animation animation) {}
+						
+						@Override
+						public void onAnimationRepeat(Animation animation) {}
+						
+						@Override
+						public void onAnimationEnd(Animation animation) {			
+							imageView.setVisibility(View.VISIBLE);
+						}
+					});
+			        imageView.startAnimation(fadeInAnimation);
 			    }
 			}
 		}

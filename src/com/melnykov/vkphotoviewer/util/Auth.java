@@ -30,10 +30,6 @@ public class Auth {
 		return extractPattern(redirectUri, "user_id=(\\d*)");
 	}
 	
-	public static long getExpirationTime(String redirectUri) {
-		return Long.parseLong(extractPattern(redirectUri, "expires_in=(\\d*)"));
-	}
-	
 	private static String extractPattern(String string, String pattern) {
 		Pattern p = Pattern.compile(pattern);
         Matcher m = p.matcher(string);

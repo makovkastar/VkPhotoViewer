@@ -1,20 +1,17 @@
 package com.melnykov.vkphotoviewer.net.protocol;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.HttpConnectionParams;
 
 import android.content.Context;
 import android.util.Log;
@@ -30,12 +27,10 @@ public abstract class AbstractProtocol {
 	
 	private static final String TAG = AbstractProtocol.class.getName();
 	private static final int CONNECTION_TIMEOUT = 5000;
-	private static final int SO_TIMEOUT = 10000;
 	private static final int STATUS_CODE_OK = 200;
 	
 	protected static final String BASE_URI = "https://api.vkontakte.ru/method/";
 	
-	private final HttpClient mHttpClient = new DefaultHttpClient();;
 	private final List<NameValuePair> mNameValuePairs = new ArrayList<NameValuePair>();
 	
 	private String mRequestUrl = BASE_URI;
@@ -44,12 +39,6 @@ public abstract class AbstractProtocol {
 	public AbstractProtocol(Context context, String method) {
 		this.mRequestUrl = mRequestUrl + method;
 		this.mContext = context;
-		initialize();
-	}
-	
-	private void initialize() {
-		HttpConnectionParams.setConnectionTimeout(mHttpClient.getParams(), CONNECTION_TIMEOUT);
-		HttpConnectionParams.setSoTimeout(mHttpClient.getParams(), SO_TIMEOUT);
 	}
 	
 	public Context getContext() {
@@ -109,46 +98,48 @@ public abstract class AbstractProtocol {
 	}
 	
 	public String sendRequest() {
-		String response = null;
-		HttpResponse httpResponse = null;
+		String httpResponse = null;
+
+		StringBuilder requestString = new StringBuilder();
+		String getRequest = constructGetRequest();
+		requestString.append(mRequestUrl)
+		             .append(getRequest);
+		if (Constants.DEBUG) Log.v(TAG, "Sending GET request " + requestString.toString());
+		//HttpGet httpGet = new HttpGet(requestString.toString());
+		//httpResponse = mHttpClient.execute(httpGet);
+		URL url = null;
+		HttpURLConnection urlConnection = null;
 		try {
-			StringBuilder requestString = new StringBuilder();
-			String getRequest = constructGetRequest();
-			requestString.append(mRequestUrl)
-			             .append(getRequest);
-			if (Constants.DEBUG) Log.v(TAG, "Sending GET request " + requestString.toString());
-			HttpGet httpGet = new HttpGet(requestString.toString());
-			httpResponse = mHttpClient.execute(httpGet);
+			url = new URL(requestString.toString());
+			urlConnection = (HttpURLConnection) url.openConnection();
+			urlConnection.setRequestMethod("GET");
+			urlConnection.setConnectTimeout(CONNECTION_TIMEOUT);
+		 	InputStream is = new BufferedInputStream(urlConnection.getInputStream());
+		 	httpResponse = convertInputStreamToString(is); 
 			
-			StatusLine statusLine = httpResponse.getStatusLine();
+			int statusCode = urlConnection.getResponseCode();
 			
 			if (httpResponse != null
-					&& statusLine.getStatusCode() == STATUS_CODE_OK) {
-				response = convertInputStreamToString(httpResponse.getEntity().getContent());
-				if (Constants.DEBUG) Log.v(TAG, "Response received : " + response);
+					&& statusCode == STATUS_CODE_OK) {
+				if (Constants.DEBUG) Log.v(TAG, "Response received : " + httpResponse);
 			} else {
-				int statusCode = statusLine.getStatusCode();
 				StringBuilder errorMsg = new StringBuilder();
 				errorMsg.append("Response code: ")
 				        .append(statusCode)
 				        .append(". ")
 				        .append("Description: ")
-				        .append(statusLine.getReasonPhrase());
+				        .append(convertInputStreamToString(urlConnection.getErrorStream()));
 				Log.w(TAG, "Error response received : " + errorMsg.toString());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} 
 		finally {
-			if (httpResponse != null && httpResponse.getEntity() != null) {
-				try {
-					httpResponse.getEntity().consumeContent();
-				} catch (IOException e) {
-					Log.w(TAG, "Error consuming response content", e);
-				}
+			if (urlConnection != null) {
+				urlConnection.disconnect();
 			}
 		} 
 		
-		return response;
+		return httpResponse;
 	}
 }

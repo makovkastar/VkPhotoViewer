@@ -14,12 +14,17 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.ImageView;
 import android.widget.ListView;
 
+import com.melnykov.vkphotoviewer.R;
 import com.melnykov.vkphotoviewer.model.Album;
 import com.melnykov.vkphotoviewer.net.protocol.GetAlbumsProtocol;
 import com.melnykov.vkphotoviewer.ui.adapter.AlbumAdapter;
 import com.melnykov.vkphotoviewer.util.Constants;
+import com.melnykov.vkphotoviewer.util.ImageDownloader;
+import com.melnykov.vkphotoviewer.util.ImageDownloader.BitmapDownloaderTask;
 
 public class AlbumListFragment extends ListFragment implements LoaderCallbacks<List<Album>>{
 
@@ -35,6 +40,17 @@ public class AlbumListFragment extends ListFragment implements LoaderCallbacks<L
 		super.onActivityCreated(savedInstanceState);
 		mAdapter = new AlbumAdapter(getActivity());
 		getListView().setAdapter(mAdapter);
+		getListView().setRecyclerListener(new AbsListView.RecyclerListener() {
+			
+			@Override
+			public void onMovedToScrapHeap(View view) {
+				ImageView ivAlbumCover = (ImageView) view.findViewById(R.id.ivAlbumCover);
+				BitmapDownloaderTask bitmapDownloaderTask = ImageDownloader.getBitmapDownloaderTask(ivAlbumCover);
+				if (bitmapDownloaderTask != null) {
+					bitmapDownloaderTask.cancel(true);
+				}
+			}
+		});
 	}
 	
 	@Override

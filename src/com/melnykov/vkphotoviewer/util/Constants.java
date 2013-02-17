@@ -18,8 +18,6 @@ public abstract class Constants {
 	 */
 	public static final String IEXTRA_ACCESS_TOKEN = "access_token";
 	public static final String IEXTRA_USER_ID = "user_id";
-	public static final String IEXTRA_ACCESS_TOKEN_EXPIRATION_TIME = "access_token_expiration_time";
-	
 	
 	/**
 	 * Flag for debug purpose
