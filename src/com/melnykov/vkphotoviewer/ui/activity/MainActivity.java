@@ -147,6 +147,7 @@ public class MainActivity extends FragmentActivity implements AlbumListFragment.
 	}
 	
 	private void loadAlbumList() {
+		onAuthResultSuccess = false;
 		AlbumListFragment albumListFragment = new AlbumListFragment();
 		replaceMainFragment(albumListFragment, FRAGMENT_ALBUM_LIST_TAG);
 	}
