@@ -71,6 +71,12 @@ public class AlbumListFragment extends ListFragment implements LoaderCallbacks<L
 	}
 	
 	@Override
+	public void onDetach() {
+		super.onDetach();
+		this.mAlbumSelectedListener = null;
+	}
+	
+	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
 		Album album = mAdapter.getItem(position);

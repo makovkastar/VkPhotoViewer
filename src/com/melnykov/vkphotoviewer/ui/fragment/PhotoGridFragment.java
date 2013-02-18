@@ -105,6 +105,12 @@ public class PhotoGridFragment extends Fragment implements LoaderCallbacks<List<
 	}
 	
 	@Override
+	public void onDetach() {
+		super.onDetach();
+		this.mPhotoSelectedListener = null;
+	}
+	
+	@Override
 	public Loader<List<Photo>> onCreateLoader(int id, Bundle args) {
 		final long albumId = args.getLong("albumId");
 		return new PhotoLoader(getActivity(), albumId);
