@@ -101,7 +101,6 @@ public class MainActivity extends FragmentActivity implements AlbumListFragment.
 	
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-	    //No call for super(). Bug on API Level > 11.
 		// Save current fragment
 		outState.putString(BUNDLE_KEY_CURRENT_FRAGMENT_TAG, mCurrentFragmentTag);
 		if (mCurrentFragmentTag == FRAGMENT_PHOTO_GRID_TAG) {

@@ -64,6 +64,9 @@ public class LocalCache {
 		return bitmap;
 	}
 	
+	/**
+	 * Setups memory cache: creates it and initializes the size of memory cache
+	 */
 	private void initMemoryCache() {
 		// Get max available VM memory, exceeding this amount will throw an
 	    // OutOfMemory exception. Stored in kilobytes as LruCache takes an

@@ -27,6 +27,10 @@ public class Session {
 		return instance;
 	}
 	
+	/**
+	 * Saves current session on shared preferences
+	 * @param ctx
+	 */
 	public void save(Context ctx) {
 		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
 		final Editor editor = prefs.edit();

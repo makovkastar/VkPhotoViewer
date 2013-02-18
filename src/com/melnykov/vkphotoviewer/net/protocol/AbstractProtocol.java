@@ -105,8 +105,6 @@ public abstract class AbstractProtocol {
 		requestString.append(mRequestUrl)
 		             .append(getRequest);
 		if (Constants.DEBUG) Log.v(TAG, "Sending GET request " + requestString.toString());
-		//HttpGet httpGet = new HttpGet(requestString.toString());
-		//httpResponse = mHttpClient.execute(httpGet);
 		URL url = null;
 		HttpURLConnection urlConnection = null;
 		try {

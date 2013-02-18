@@ -35,6 +35,7 @@ public abstract class Constants {
 	
 	public static final int APP_VERSION = 1;
 	
+	// Prevent from sub-classing
 	private Constants() {}
 	
 }

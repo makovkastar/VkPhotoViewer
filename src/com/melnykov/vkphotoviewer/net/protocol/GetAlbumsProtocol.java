@@ -11,6 +11,11 @@ import android.content.Context;
 
 import com.melnykov.vkphotoviewer.model.Album;
 
+/**
+ * Protocol for retrieving albums
+ *
+ */
+
 public class GetAlbumsProtocol extends AbstractProtocol {
 
 	private static final String METHOD_NAME = "photos.getAlbums";

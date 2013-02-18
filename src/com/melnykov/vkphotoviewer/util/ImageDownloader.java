@@ -22,7 +22,6 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
@@ -35,6 +34,9 @@ public class ImageDownloader {
 	
 	private ImageDownloader(Context context) {
 		mCache = LocalCache.getInstance(context);
+		/**
+		 * Creates a thread pool that reuses a fixed number of threads 
+		 */
 		mExecutorService = Executors.newFixedThreadPool(N_THREADS);
 	}
 	
@@ -65,6 +67,12 @@ public class ImageDownloader {
 		}
 	}
 	
+	/**
+	 * Will stop the possible download in progress on this imageView since a new one is about to start.
+	 * @param url
+	 * @param imageView
+	 * @return true if download process must be cancelled
+	 */
 	private static boolean cancelPotentialDownload(String url, ImageView imageView) {
 	    BitmapDownloaderTask bitmapDownloaderTask = getBitmapDownloaderTask(imageView);
 
